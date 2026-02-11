@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Genie Pack - 3 Wishes</title>
+  <style>
+    :root{
+      --pink1:#fff5f7; /* Світлий фон */
+      --pink2:#ffe4e9; /* Середній рожевий */
+      --pink3:#ffd1dc; /* Акцентний рожевий */
+      --pink4:#ff8da1; /* Насичений для кнопок */
+      --text:#4a3b3e;  /* Темно-коричневий з рожевим підтоном */
+      --stroke:rgba(255,141,161,.15);
+      --shadow:rgba(219,112,147,.2);
+      --pinkGlow: rgba(255,182,193,.50);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; overflow-x:hidden; margin:0; }
+
+    body{
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      overflow:hidden;
+      touch-action:none;
+      background:
+        radial-gradient(900px 700px at 50% 16%, rgba(255,255,255,.8), transparent 62%),
+        radial-gradient(1000px 800px at 22% 72%, rgba(255,228,233,.6), transparent 66%),
+        radial-gradient(900px 700px at 80% 78%, rgba(255,209,220,.5), transparent 62%),
+        linear-gradient(180deg, var(--pink1) 0%, var(--pink2) 45%, #ffffff 100%);
+    }
+
+    /* Pink Dunes */
+    body::before{
+      content:"";
+      position:fixed;
+      inset:-2px;
+      pointer-events:none;
+      opacity:.6;
+      background-repeat:no-repeat;
+      background-position: 50% 100%;
+      background-size: cover;
+      mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='800' viewBox='0 0 1200 800'%3E%3Cdefs%3E%3CradialGradient id='sun' cx='50%25' cy='24%25' r='40%25'%3E%3Cstop offset='0%25' stop-color='%23ffffff' stop-opacity='1'/%3E%3Cstop offset='60%25' stop-color='%23fff0f3' stop-opacity='.4'/%3E%3Cstop offset='100%25' stop-color='%23fff0f3' stop-opacity='0'/%3E%3C/radialGradient%3E%3ClinearGradient id='d1' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%23ffd1dc' stop-opacity='.7'/%3E%3Cstop offset='100%25' stop-color='%23ffb6c1' stop-opacity='.9'/%3E%3C/linearGradient%3E%3ClinearGradient id='d2' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%23ffe4e9' stop-opacity='.6'/%3E%3Cstop offset='100%25' stop-color='%23ffccd5' stop-opacity='.8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='800' fill='none'/%3E%3Ccircle cx='600' cy='170' r='220' fill='url(%23sun)'/%3E%3Cpath d='M0 610 C140 540, 320 560, 470 590 C640 625, 780 520, 930 560 C1060 595, 1120 575, 1200 540 L1200 800 L0 800 Z' fill='url(%23d2)'/%3E%3Cpath d='M0 670 C120 610, 280 640, 420 675 C590 720, 770 615, 920 655 C1040 690, 1110 675, 1200 635 L1200 800 L0 800 Z' fill='url(%23d1)'/%3E%3C/svg%3E");
+    }
+
+    .safe{
+      position:relative;
+      height:100svh;
+      width:100vw;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    }
+
+    .title{
+      position:absolute;
+      top: 20px;
+      left:50%;
+      transform:translateX(-50%);
+      width:min(94vw, 560px);
+      text-align:center;
+      z-index: 10;
+      transition: opacity .3s ease;
+    }
+    .title .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 24px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.8);
+      border: 1px solid rgba(255,182,193,.3);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 25px rgba(255,182,193,0.2);
+    }
+    .title .text{
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-size: 15px;
+      background: linear-gradient(180deg, #ff6b81, #d63384);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .lamp{
+      position:absolute;
+      display:grid;
+      place-items:center;
+      transition: opacity .4s ease, transform .4s ease;
+      z-index: 2;
+    }
+    .lamp img{
+      width:100%;
+      height:100%;
+      object-fit: contain;
+      pointer-events:none;
+    }
+    .lamp button{
+      all:unset;
+      cursor:pointer;
+      width:100%;
+      height:100%;
+      display:grid;
+      place-items:center;
+    }
+
+    .corner{ width: 40vw; max-width: 220px; aspect-ratio: 1/1; opacity: 0.8; }
+    .tl{ left: 5vw; top: 15vh; transform: rotate(-5deg); }
+    .tr{ right: 5vw; top: 15vh; transform: rotate(5deg); }
+    .bl{ left: 5vw; bottom: 12vh; transform: rotate(5deg); }
+    .br{ right: 5vw; bottom: 12vh; transform: rotate(-5deg); }
+
+    .center{
+      width: 75vw;
+      max-width: 400px;
+      aspect-ratio: 1/1;
+      left:50%;
+      top:50%;
+      transform: translate(-50%, -50%);
+      z-index: 5;
+    }
+
+    .center::before{
+      content:"";
+      position:absolute;
+      inset:-10%;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--pinkGlow) 0%, transparent 70%);
+      z-index: -1;
+      animation: glowPulse 2.5s infinite ease-in-out;
+    }
+    @keyframes glowPulse{
+      0%, 100% { transform: scale(1); opacity: 0.4; }
+      50% { transform: scale(1.15); opacity: 0.7; }
+    }
+
+    .pulse{ animation: pulse 1.5s infinite ease-in-out; }
+    @keyframes pulse{
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.04); }
+    }
+
+    .rub-active{ animation: rubWiggle 0.15s infinite; }
+    @keyframes rubWiggle{
+      0% { transform: translate(-50%, -50%) rotate(-2deg); }
+      100% { transform: translate(-50%, -50%) rotate(2deg); }
+    }
+
+    body.mode-win .corner, body.mode-rub .corner { opacity: 0; pointer-events: none; }
+    
+    .reward{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform: translate(-50%, -50%);
+      width: min(70vw, 320px);
+      z-index: 20;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .reward img{
+      width:100%;
+      border-radius: 24px;
+      box-shadow: 0 25px 50px rgba(255,141,161,0.25);
+      background: white;
+      padding: 12px;
+      border: 2px solid var(--pink2);
+    }
+    .reward.show{
+      animation: rewardPop 0.6s cubic-bezier(0.17, 0.89, 0.32, 1.27) forwards;
+      opacity: 1;
+    }
+    @keyframes rewardPop{
+      0% { transform: translate(-50%, -30%) scale(0.5) rotate(-10deg); opacity: 0; }
+      100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    #fx{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      pointer-events:none;
+      z-index: 15;
+    }
+
+    .formOverlay{
+      position:fixed;
+      inset:0;
+      background: #ffffff;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s;
+      overflow-y: auto;
+    }
+    .formOverlay.show{ opacity: 1; pointer-events: auto; }
+    .formContent{ width: 100%; max-width: 340px; text-align: center; }
+    
+    .previewGrid { 
+      display: grid; 
+      grid-template-columns: repeat(3, 1fr); 
+      gap: 12px; 
+      margin-bottom: 30px; 
+      margin-top: 20px;
+    }
+    .previewGrid img { 
+      width: 100%; 
+      height: 90px; 
+      object-fit: contain; 
+      background: #fffafa;
+      border-radius: 12px;
+      border: 1px solid var(--pink2);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    }
+    
+    .field{
+      width: 100%;
+      padding: 18px;
+      margin-bottom: 14px;
+      border: 2px solid var(--pink2);
+      border-radius: 16px;
+      font-size: 16px;
+      outline: none;
+      background: #fff;
+      color: var(--text);
+      transition: border-color 0.2s;
+    }
+    .field:focus{ border-color: var(--pink4); }
+
+    .btn{
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #ff8da1, #ff6b81);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      font-weight: bold;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(255,107,129,0.3);
+      transition: transform 0.2s;
+    }
+    .btn:active{ transform: scale(0.98); }
+
+    .successOverlay{
+      position:fixed;
+      inset:0;
+      background: #ffffff;
+      z-index: 200;
+      display: grid;
+      place-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .successOverlay.show{ opacity: 1; pointer-events: auto; }
+    .badge{ font-size: 100px; color: var(--pink4); }
+
+    .ambient { position: absolute; inset: 0; pointer-events: none; }
+  </style>
+</head>
+<body class="mode-choose">
+
+  <div class="safe">
+    <div class="title" id="title">
+      <span class="chip">
+        <span class="text" id="titleText">Tap to start</span>
+      </span>
+    </div>
+
+    <canvas id="fx"></canvas>
+    <div class="ambient" id="ambient"></div>
+
+    <div class="stage">
+      <div class="lamp corner tl"><img src="https://i.postimg.cc/VNMSpgKj/3747e77cb7e9aa4fe6e4714ebb12fab6-removebg-preview.png"></div>
+      <div class="lamp corner tr"><img src="https://i.postimg.cc/VNMSpgKj/3747e77cb7e9aa4fe6e4714ebb12fab6-removebg-preview.png"></div>
+      <div class="lamp corner bl"><img src="https://i.postimg.cc/VNMSpgKj/3747e77cb7e9aa4fe6e4714ebb12fab6-removebg-preview.png"></div>
+      <div class="lamp corner br"><img src="https://i.postimg.cc/VNMSpgKj/3747e77cb7e9aa4fe6e4714ebb12fab6-removebg-preview.png"></div>
+
+      <div class="lamp center pulse" id="centerLamp">
+        <button id="centerBtn">
+          <img src="https://i.postimg.cc/br6dkBvn/967ebc6df74fb162a03fa2c45149992c-1-removebg-preview.png">
+        </button>
+      </div>
+
+      <div class="reward" id="reward"><img id="rewardImg" src=""></div>
+    </div>
+  </div>
+
+  <div class="formOverlay" id="formOverlay">
+    <div class="formContent">
+      <div class="previewGrid" id="previewGrid"></div>
+      <form id="leadForm">
+        <input class="field" placeholder="Phone" required type="tel" id="phoneField">
+        <button class="btn" type="submit">Get insights</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="successOverlay" id="successOverlay">
+    <div class="badge">✔</div>
+  </div>
+
+  <script>
+    const PRIZES = [
+      "https://i.postimg.cc/dQmPgFVH/62817ed0e5cd909ade3ad022d67d00c6-removebg-preview.png",
+      "https://i.postimg.cc/NFGNWWNh/af1d6e44d94ddb8d5543a3ebc182b61c-removebg-preview.png",
+      "https://i.postimg.cc/nrw1NM9t/7e560478f068da59a3ab5ca8b82cbe79-removebg-preview.png"
+    ];
+
+    let currentStep = 0; 
+    let rubbing = false;
+    let rubDistance = 0;
+    let lastX = 0, lastY = 0;
+    let isSummoning = false;
+
+    const body = document.body;
+    const centerLamp = document.getElementById('centerLamp');
+    const centerBtn = document.getElementById('centerBtn');
+    const rewardWrap = document.getElementById('reward');
+    const rewardImg = document.getElementById('rewardImg');
+    const titleText = document.getElementById('titleText');
+    const formOverlay = document.getElementById('formOverlay');
+    const previewGrid = document.getElementById('previewGrid');
+    const fxCanvas = document.getElementById('fx');
+    const ctx = fxCanvas.getContext('2d');
+
+    function resize() {
+      fxCanvas.width = window.innerWidth;
+      fxCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    titleText.innerText = "Rub the package!";
+
+    centerBtn.addEventListener('click', () => {
+      if (body.classList.contains('mode-choose')) {
+        body.classList.remove('mode-choose');
+        body.classList.add('mode-rub');
+        centerLamp.classList.remove('pulse');
+        updateTitle();
+      }
+    });
+
+    function updateTitle() {
+      titleText.innerText = "Rub it!";
+    }
+
+    function onDown(e) {
+      if (!body.classList.contains('mode-rub') || isSummoning) return;
+      rubbing = true;
+      const pt = e.touches ? e.touches[0] : e;
+      lastX = pt.clientX;
+      lastY = pt.clientY;
+      centerLamp.classList.add('rub-active');
+    }
+
+    function onMove(e) {
+      if (!rubbing || isSummoning) return;
+      const pt = e.touches ? e.touches[0] : e;
+      const dist = Math.hypot(pt.clientX - lastX, pt.clientY - lastY);
+      rubDistance += dist;
+      lastX = pt.clientX;
+      lastY = pt.clientY;
+
+      if (rubDistance > 1000) {
+        summonPrize();
+      }
+    }
+
+    function onUp() {
+      rubbing = false;
+      centerLamp.classList.remove('rub-active');
+    }
+
+    window.addEventListener('mousedown', onDown);
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+    window.addEventListener('touchstart', onDown, {passive: false});
+    window.addEventListener('touchmove', onMove, {passive: false});
+    window.addEventListener('touchend', onUp);
+
+    function summonPrize() {
+      isSummoning = true;
+      rubbing = false;
+      rubDistance = 0;
+      centerLamp.classList.remove('rub-active');
+      centerLamp.style.opacity = "0";
+
+      rewardImg.src = PRIZES[currentStep];
+      rewardWrap.classList.add('show');
+      startFireworks();
+
+      setTimeout(() => {
+        if (currentStep < 2) {
+          currentStep++;
+          rewardWrap.classList.remove('show');
+          centerLamp.style.opacity = "1";
+          isSummoning = false;
+          updateTitle();
+          stopFireworks();
+        } else {
+          PRIZES.forEach(src => {
+            const img = document.createElement('img');
+            img.src = src;
+            previewGrid.appendChild(img);
+          });
+          formOverlay.classList.add('show');
+        }
+      }, 2000);
+    }
+
+    let particles = [];
+    let animationId = null;
+
+    function startFireworks() {
+      const count = 80;
+      const x = window.innerWidth / 2;
+      const y = window.innerHeight / 2;
+      
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = Math.random() * 6 + 2;
+        particles.push({
+          x: x, 
+          y: y,
+          vx: Math.cos(angle) * velocity,
+          vy: Math.sin(angle) * velocity,
+          alpha: 1,
+          color: `hsl(${Math.random() * 20 + 340}, 100%, 75%)` // Рожеві відтінки частинок
+        });
+      }
+      if (!animationId) loop();
+    }
+
+    function stopFireworks() {
+      particles = [];
+      ctx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+    }
+
+    function loop() {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+      ctx.fillRect(0, 0, fxCanvas.width, fxCanvas.height);
+      ctx.globalCompositeOperation = 'lighter';
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.15;
+        p.alpha -= 0.015;
+
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (p.alpha <= 0) particles.splice(i, 1);
+      }
+      animationId = requestAnimationFrame(loop);
+    }
+
+    const form = document.getElementById('leadForm');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formOverlay.classList.remove('show');
+      document.getElementById('successOverlay').classList.add('show');
+      startFireworks();
+    });
+  </script>
+</body>
+</html>
