@@ -18,12 +18,12 @@
 
     *{ 
       box-sizing:border-box;
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
+      -webkit-touch-callout: none !important;
+      -webkit-user-select: none !important;
+      -khtml-user-select: none !important;
+      -moz-user-select: none !important;
+      -ms-user-select: none !important;
+      user-select: none !important;
     }
     html,body{ height:100%; overflow-x:hidden; margin:0; }
 
@@ -32,6 +32,12 @@
       color:var(--text);
       overflow:hidden;
       touch-action:none;
+      user-select: none !important;
+      -webkit-touch-callout: none !important;
+      -webkit-user-select: none !important;
+      -khtml-user-select: none !important;
+      -moz-user-select: none !important;
+      -ms-user-select: none !important;
       background:
         radial-gradient(900px 700px at 50% 16%, rgba(255,255,255,.8), transparent 62%),
         radial-gradient(1000px 800px at 22% 72%, rgba(255,228,233,.6), transparent 66%),
